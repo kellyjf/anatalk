@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_anatalk.ui'
 #
-# Created: Sat Jan 28 13:34:42 2017
+# Created: Sat Jan 28 20:49:31 2017
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_AnatalkWindow(object):
 	def setupUi(self, AnatalkWindow):
 		AnatalkWindow.setObjectName(_fromUtf8("AnatalkWindow"))
-		AnatalkWindow.resize(568, 502)
+		AnatalkWindow.resize(440, 300)
 		self.centralwidget = QtGui.QWidget(AnatalkWindow)
 		self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
 		self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -56,12 +56,6 @@ class Ui_AnatalkWindow(object):
 		self.mainPlot.setObjectName(_fromUtf8("mainPlot"))
 		self.verticalLayout.addWidget(self.mainPlot)
 		AnatalkWindow.setCentralWidget(self.centralwidget)
-		self.menubar = QtGui.QMenuBar(AnatalkWindow)
-		self.menubar.setGeometry(QtCore.QRect(0, 0, 568, 27))
-		self.menubar.setObjectName(_fromUtf8("menubar"))
-		self.menu_File = QtGui.QMenu(self.menubar)
-		self.menu_File.setObjectName(_fromUtf8("menu_File"))
-		AnatalkWindow.setMenuBar(self.menubar)
 		self.statusbar = QtGui.QStatusBar(AnatalkWindow)
 		self.statusbar.setObjectName(_fromUtf8("statusbar"))
 		AnatalkWindow.setStatusBar(self.statusbar)
@@ -76,19 +70,10 @@ class Ui_AnatalkWindow(object):
 		self.action_Play.setObjectName(_fromUtf8("action_Play"))
 		self.action_Stop = QtGui.QAction(AnatalkWindow)
 		self.action_Stop.setObjectName(_fromUtf8("action_Stop"))
-		self.menu_File.addAction(self.action_Open)
-		self.menu_File.addSeparator()
-		self.menu_File.addAction(self.action_Play)
-		self.menu_File.addAction(self.action_Stop)
-		self.menu_File.addSeparator()
-		self.menu_File.addAction(self.action_Quit)
-		self.menubar.addAction(self.menu_File.menuAction())
 		self.toolBar.addAction(self.action_Quit)
 		self.toolBar.addAction(self.action_Open)
 		self.toolBar.addAction(self.action_Play)
 		self.toolBar.addAction(self.action_Stop)
-		self.label.setBuddy(self.freqLine)
-		self.label_2.setBuddy(self.windowCombo)
 
 		self.retranslateUi(AnatalkWindow)
 		QtCore.QObject.connect(self.action_Quit, QtCore.SIGNAL(_fromUtf8("activated()")), AnatalkWindow.close)
@@ -96,13 +81,12 @@ class Ui_AnatalkWindow(object):
 
 	def retranslateUi(self, AnatalkWindow):
 		AnatalkWindow.setWindowTitle(_translate("AnatalkWindow", "Anatalk", None))
-		self.label.setText(_translate("AnatalkWindow", "&Freq", None))
-		self.label_2.setText(_translate("AnatalkWindow", "&Window", None))
+		self.label.setText(_translate("AnatalkWindow", "Frequency", None))
+		self.label_2.setText(_translate("AnatalkWindow", "Window", None))
 		self.windowCombo.setItemText(0, _translate("AnatalkWindow", "10", None))
 		self.windowCombo.setItemText(1, _translate("AnatalkWindow", "20", None))
 		self.windowCombo.setItemText(2, _translate("AnatalkWindow", "40", None))
 		self.windowCombo.setItemText(3, _translate("AnatalkWindow", "80", None))
-		self.menu_File.setTitle(_translate("AnatalkWindow", "&File", None))
 		self.toolBar.setWindowTitle(_translate("AnatalkWindow", "toolBar", None))
 		self.action_Open.setText(_translate("AnatalkWindow", "&Open", None))
 		self.action_Quit.setText(_translate("AnatalkWindow", "&Quit", None))

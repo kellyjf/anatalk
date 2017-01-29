@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>568</width>
-    <height>502</height>
+    <width>440</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,10 +20,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>&amp;Freq</string>
-        </property>
-        <property name="buddy">
-         <cstring>freqLine</cstring>
+         <string>Frequency</string>
         </property>
        </widget>
       </item>
@@ -33,10 +30,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>&amp;Window</string>
-        </property>
-        <property name="buddy">
-         <cstring>windowCombo</cstring>
+         <string>Window</string>
         </property>
        </widget>
       </item>
@@ -83,28 +77,6 @@
      <widget class="PlotWidget" name="mainPlot"/>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>568</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menu_File">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="action_Open"/>
-    <addaction name="separator"/>
-    <addaction name="action_Play"/>
-    <addaction name="action_Stop"/>
-    <addaction name="separator"/>
-    <addaction name="action_Quit"/>
-   </widget>
-   <addaction name="menu_File"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">

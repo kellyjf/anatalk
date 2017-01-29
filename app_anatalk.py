@@ -63,10 +63,11 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 
 		self.action_Open.connect(self.action_Open, SIGNAL("activated()"), self.pickfile)
 		self.action_Play.connect(self.action_Play, SIGNAL("activated()"), self.play)
+		self.action_Play.connect(self.action_Stop, SIGNAL("activated()"), self.stopplay)
 
 	def pickfile(self):
 		self.filename=QFileDialog.getOpenFileName(self, "Select a .wav file",filter="Sound files (*.wav)")
-		self.openfile()
+		self.openfile(self.filename)
 
 	def openfile(self,filename):
 		self.filename=filename
@@ -90,6 +91,9 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.playThread = PlayThread(self)
 		self.playThread.connect(self.playThread, SIGNAL("update()"),self.plot)
 		self.playThread.start()
+
+	def stopplay(self):
+		self.playThread.terminate()
 
 		
 
