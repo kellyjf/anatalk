@@ -1,0 +1,13 @@
+#! /bin/bash
+
+export QWS_DISPLAY=LinuxFb:/dev/fb1
+export QWS_MOUSE_PROTO=Tslib:/dev/input/event0
+export TSLIB_TSDEVICE=/dev/input/event0
+export TSLIB_FBDEVICE=/dev/fb1
+
+if [ ! -e /etc/pointercal ]; then
+	touch /etc/pointercal
+	ts_calibrate
+fi
+
+python ./app_anatalk.py -qws
