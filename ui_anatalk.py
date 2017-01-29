@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_AnatalkWindow(object):
 	def setupUi(self, AnatalkWindow):
 		AnatalkWindow.setObjectName(_fromUtf8("AnatalkWindow"))
-		AnatalkWindow.resize(440, 300)
+		AnatalkWindow.resize(480, 300)
 		self.centralwidget = QtGui.QWidget(AnatalkWindow)
 		self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
 		self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)

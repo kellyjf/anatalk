@@ -10,4 +10,4 @@ if [ ! -e /etc/pointercal ]; then
 	ts_calibrate
 fi
 
-python ./app_anatalk.py -qws
+python ./app_anatalk.py -qws $*

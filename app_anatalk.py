@@ -47,7 +47,7 @@ class PlayThread(QThread):
 				self.parent.deque.append(abs(numpy.fft.rfft([struct.unpack('h',data[i:i+2])[0] for i in range(0,4*magic,4)])))
 				self.emit(SIGNAL("update()"))
 			#	QThread.yieldCurrentThread()
-				time.sleep(0.1)
+				time.sleep(magic/framerate)
 		
 		print "Done", self.parent.filename
 
@@ -61,9 +61,10 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.deque=collections.deque()
 
 
-		self.action_Open.connect(self.action_Open, SIGNAL("activated()"), self.pickfile)
-		self.action_Play.connect(self.action_Play, SIGNAL("activated()"), self.play)
-		self.action_Play.connect(self.action_Stop, SIGNAL("activated()"), self.stopplay)
+		self.action_Open.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
+		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
+		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
+		self.action_Play.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
 
 	def pickfile(self):
 		self.filename=QFileDialog.getOpenFileName(self, "Select a .wav file",filter="Sound files (*.wav)")
