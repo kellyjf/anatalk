@@ -34,21 +34,29 @@ class PlayThread(QThread):
 		fs=numpy.fft.fftfreq(magic)
 		fs1=framerate*fs[0:magic/2]
 
+		if sampwidth==1:
+		    format=aa.PCM_FORMAT_U8
+		    fmtcode="B"
+		else:
+		    format=aa.PCM_FORMAT_S16_LE
+		    fmtcode="h"
+
+
+		rec=aa.PCM(aa.PCM_CAPTURE)
+		rec.setchannels(channels)
+		rec.setrate(framerate)
+		rec.setformat(format)
+		rec.setperiodsize(channels*magic)
+
 		if self.parent.filename:
 			self.parent.pcm.setchannels(channels)
 			self.parent.pcm.setrate(framerate)
 
-                        if sampwidth==1:
-                            format=aa.PCM_FORMAT_U8
-                            fmtcode="B"
-                        else:
-                            format=aa.PCM_FORMAT_S16_LE
-                            fmtcode="h"
-
 			self.parent.pcm.setformat(format)
 			self.parent.pcm.setperiodsize(channels*magic)
 			
-			data=self.parent.wave.readframes(magic)
+#			data=self.parent.wave.readframes(magic)
+			size,data=rec.read()
                         start=time.time()
                         fcnt=0
 			while data:
