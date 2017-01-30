@@ -24,7 +24,6 @@ import collections
 class PlayThread(QThread):
 	def __init__(self, parent=None):
 		super(PlayThread,self).__init__(parent)
-		print "PlayThread",parent
 		self.parent=parent
 
 	def run(self):
@@ -57,8 +56,9 @@ class PlayThread(QThread):
                                 fcnt=fcnt+magic
                                 delta=time.time()-start
 				data=self.parent.wave.readframes(magic)
-				self.parent.deque.append(abs(numpy.fft.rfft([struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)])))
-				self.emit(SIGNAL("update()"))
+				if len(data)==magic*sampwidth*channels:
+					self.parent.deque.append(abs(numpy.fft.rfft([struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)],norm="ortho")))
+					self.emit(SIGNAL("update()"))
 			#	QThread.yieldCurrentThread()
                                 if fcnt>delta*framerate: 
                                     time.sleep(magic/framerate)
@@ -70,11 +70,13 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		QMainWindow.__init__(self,parent)
 		self.setupUi(self)
 		self.viewBox=self.mainPlot.getViewBox()
-		self.viewBox.setRange(xRange=[0,3000],yRange=[0,2000000])
+		self.viewBox.setRange(xRange=[0,3000],yRange=[0,5000])
 		self.pcm=aa.PCM(aa.PCM_PLAYBACK)
 		self.deque=collections.deque()
 		self.opendlg=QFileDialog()
 		self.opendlg.setFilter("Sound files (*.wav)")
+
+		self.framerate=44100
 		self.setwindow()
 
 		self.windowCombo.connect(self.windowCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
@@ -94,8 +96,13 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			filename=str(self.opendlg.selectedFiles()[0])
 			self.openfile(filename)
 
+	def setfreqs(self):
+		self.fs1=self.framerate*self.fs[0:self.magic/2]
+
 	def setwindow(self, val=None):
 		self.magic=int(self.windowCombo.currentText())
+		self.fs=numpy.fft.fftfreq(self.magic)
+		self.setfreqs()
 
 	def openfile(self,filename):
 		self.filename=filename
@@ -105,8 +112,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.framerate=self.wave.getframerate()
 			self.sampwidth=self.wave.getsampwidth()
 			self.statusbar.showMessage("%s (%d,%d,%d)"%(self.filename,self.framerate,self.channels,self.sampwidth))
-			fs=numpy.fft.fftfreq(self.magic)
-			self.fs1=self.framerate*fs[0:self.magic/2]
+			self.setfreqs()
 
 	def plot(self):
 		ff=self.deque.popleft()
@@ -114,7 +120,6 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.mainPlot.plot(self.fs1,ff[0:self.magic/2])
 		
 	def play(self):
-		print "play()"
 		self.playThread = PlayThread(self)
 		self.playThread.connect(self.playThread, SIGNAL("update()"),self.plot)
 		self.playThread.start()
