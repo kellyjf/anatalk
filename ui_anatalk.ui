@@ -20,12 +20,25 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Frequency</string>
+         <string>Zoom</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="freqLine"/>
+       <widget class="QSlider" name="zoomSlider">
+        <property name="minimum">
+         <number>100</number>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="value">
+         <number>3000</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_2">
@@ -38,22 +51,17 @@
        <widget class="QComboBox" name="windowCombo">
         <item>
          <property name="text">
-          <string>10</string>
+          <string>1024</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>20</string>
+          <string>4096</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>40</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>80</string>
+          <string>16384</string>
          </property>
         </item>
        </widget>
@@ -93,6 +101,26 @@
    <addaction name="action_Open"/>
    <addaction name="action_Play"/>
    <addaction name="action_Stop"/>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>480</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_Open"/>
+    <addaction name="action_Play"/>
+    <addaction name="action_Stop"/>
+    <addaction name="action_Quit"/>
+   </widget>
+   <addaction name="menu_File"/>
   </widget>
   <action name="action_Open">
    <property name="text">

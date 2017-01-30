@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_anatalk.ui'
 #
-# Created: Sat Jan 28 20:49:31 2017
-#      by: PyQt4 UI code generator 4.10.1
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -36,15 +35,18 @@ class Ui_AnatalkWindow(object):
 		self.label = QtGui.QLabel(self.centralwidget)
 		self.label.setObjectName(_fromUtf8("label"))
 		self.horizontalLayout.addWidget(self.label)
-		self.freqLine = QtGui.QLineEdit(self.centralwidget)
-		self.freqLine.setObjectName(_fromUtf8("freqLine"))
-		self.horizontalLayout.addWidget(self.freqLine)
+		self.zoomSlider = QtGui.QSlider(self.centralwidget)
+		self.zoomSlider.setMinimum(100)
+		self.zoomSlider.setMaximum(10000)
+		self.zoomSlider.setProperty("value", 3000)
+		self.zoomSlider.setOrientation(QtCore.Qt.Horizontal)
+		self.zoomSlider.setObjectName(_fromUtf8("zoomSlider"))
+		self.horizontalLayout.addWidget(self.zoomSlider)
 		self.label_2 = QtGui.QLabel(self.centralwidget)
 		self.label_2.setObjectName(_fromUtf8("label_2"))
 		self.horizontalLayout.addWidget(self.label_2)
 		self.windowCombo = QtGui.QComboBox(self.centralwidget)
 		self.windowCombo.setObjectName(_fromUtf8("windowCombo"))
-		self.windowCombo.addItem(_fromUtf8(""))
 		self.windowCombo.addItem(_fromUtf8(""))
 		self.windowCombo.addItem(_fromUtf8(""))
 		self.windowCombo.addItem(_fromUtf8(""))
@@ -62,6 +64,12 @@ class Ui_AnatalkWindow(object):
 		self.toolBar = QtGui.QToolBar(AnatalkWindow)
 		self.toolBar.setObjectName(_fromUtf8("toolBar"))
 		AnatalkWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+		self.menuBar = QtGui.QMenuBar(AnatalkWindow)
+		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 25))
+		self.menuBar.setObjectName(_fromUtf8("menuBar"))
+		self.menu_File = QtGui.QMenu(self.menuBar)
+		self.menu_File.setObjectName(_fromUtf8("menu_File"))
+		AnatalkWindow.setMenuBar(self.menuBar)
 		self.action_Open = QtGui.QAction(AnatalkWindow)
 		self.action_Open.setObjectName(_fromUtf8("action_Open"))
 		self.action_Quit = QtGui.QAction(AnatalkWindow)
@@ -74,6 +82,11 @@ class Ui_AnatalkWindow(object):
 		self.toolBar.addAction(self.action_Open)
 		self.toolBar.addAction(self.action_Play)
 		self.toolBar.addAction(self.action_Stop)
+		self.menu_File.addAction(self.action_Open)
+		self.menu_File.addAction(self.action_Play)
+		self.menu_File.addAction(self.action_Stop)
+		self.menu_File.addAction(self.action_Quit)
+		self.menuBar.addAction(self.menu_File.menuAction())
 
 		self.retranslateUi(AnatalkWindow)
 		QtCore.QObject.connect(self.action_Quit, QtCore.SIGNAL(_fromUtf8("activated()")), AnatalkWindow.close)
@@ -81,13 +94,13 @@ class Ui_AnatalkWindow(object):
 
 	def retranslateUi(self, AnatalkWindow):
 		AnatalkWindow.setWindowTitle(_translate("AnatalkWindow", "Anatalk", None))
-		self.label.setText(_translate("AnatalkWindow", "Frequency", None))
+		self.label.setText(_translate("AnatalkWindow", "Zoom", None))
 		self.label_2.setText(_translate("AnatalkWindow", "Window", None))
-		self.windowCombo.setItemText(0, _translate("AnatalkWindow", "10", None))
-		self.windowCombo.setItemText(1, _translate("AnatalkWindow", "20", None))
-		self.windowCombo.setItemText(2, _translate("AnatalkWindow", "40", None))
-		self.windowCombo.setItemText(3, _translate("AnatalkWindow", "80", None))
+		self.windowCombo.setItemText(0, _translate("AnatalkWindow", "1024", None))
+		self.windowCombo.setItemText(1, _translate("AnatalkWindow", "4096", None))
+		self.windowCombo.setItemText(2, _translate("AnatalkWindow", "16384", None))
 		self.toolBar.setWindowTitle(_translate("AnatalkWindow", "toolBar", None))
+		self.menu_File.setTitle(_translate("AnatalkWindow", "&File", None))
 		self.action_Open.setText(_translate("AnatalkWindow", "&Open", None))
 		self.action_Quit.setText(_translate("AnatalkWindow", "&Quit", None))
 		self.action_Play.setText(_translate("AnatalkWindow", "&Play", None))

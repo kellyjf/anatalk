@@ -70,19 +70,32 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		QMainWindow.__init__(self,parent)
 		self.setupUi(self)
 		self.viewBox=self.mainPlot.getViewBox()
-		self.viewBox.setRange(xRange=[0,8000],yRange=[0,2000000])
+		self.viewBox.setRange(xRange=[0,3000],yRange=[0,2000000])
 		self.pcm=aa.PCM(aa.PCM_PLAYBACK)
 		self.deque=collections.deque()
+		self.opendlg=QFileDialog()
+		self.opendlg.setFilter("Sound files (*.wav)")
+		self.setwindow()
 
-
+		self.windowCombo.connect(self.windowCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
+		self.zoomSlider.connect(self.zoomSlider, SIGNAL("valueChanged(int)"), self.zoom)
 		self.action_Open.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
 		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
 		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
 		self.action_Play.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
 
+	def zoom(self, maxval):
+		self.viewBox.setRange(xRange=[0,maxval])
+
 	def pickfile(self):
-		self.filename=QFileDialog.getOpenFileName(self, "Select a .wav file",filter="Sound files (*.wav)")
-		self.openfile(self.filename)
+		self.opendlg.show()
+		self.opendlg.exec_()
+		if self.opendlg.result()==1:
+			filename=str(self.opendlg.selectedFiles()[0])
+			self.openfile(filename)
+
+	def setwindow(self, val=None):
+		self.magic=int(self.windowCombo.currentText())
 
 	def openfile(self,filename):
 		self.filename=filename
@@ -92,7 +105,6 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.framerate=self.wave.getframerate()
 			self.sampwidth=self.wave.getsampwidth()
 			self.statusbar.showMessage("%s (%d,%d,%d)"%(self.filename,self.framerate,self.channels,self.sampwidth))
-			self.magic=8192
 			fs=numpy.fft.fftfreq(self.magic)
 			self.fs1=self.framerate*fs[0:self.magic/2]
 
