@@ -31,23 +31,37 @@ class PlayThread(QThread):
 		channels=self.parent.channels
 		framerate=self.parent.framerate
 		magic=self.parent.magic
+		sampwidth=self.parent.sampwidth
 		fs=numpy.fft.fftfreq(magic)
 		fs1=framerate*fs[0:magic/2]
 
 		if self.parent.filename:
 			self.parent.pcm.setchannels(channels)
 			self.parent.pcm.setrate(framerate)
-			self.parent.pcm.setformat(aa.PCM_FORMAT_S16_LE)
+
+                        if sampwidth==1:
+                            format=aa.PCM_FORMAT_U8
+                            fmtcode="B"
+                        else:
+                            format=aa.PCM_FORMAT_S16_LE
+                            fmtcode="h"
+
+			self.parent.pcm.setformat(format)
 			self.parent.pcm.setperiodsize(channels*magic)
 			
 			data=self.parent.wave.readframes(magic)
+                        start=time.time()
+                        fcnt=0
 			while data:
 				self.parent.pcm.write(data)
+                                fcnt=fcnt+magic
+                                delta=time.time()-start
 				data=self.parent.wave.readframes(magic)
-				self.parent.deque.append(abs(numpy.fft.rfft([struct.unpack('h',data[i:i+2])[0] for i in range(0,4*magic,4)])))
+				self.parent.deque.append(abs(numpy.fft.rfft([struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)])))
 				self.emit(SIGNAL("update()"))
 			#	QThread.yieldCurrentThread()
-				time.sleep(magic/framerate)
+                                if fcnt>delta*framerate: 
+                                    time.sleep(magic/framerate)
 		
 		print "Done", self.parent.filename
 
