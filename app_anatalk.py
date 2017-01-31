@@ -21,18 +21,19 @@ import struct
 import time
 import collections
 
-class PlayThread(QThread):
+class Audio(QObject):
 	def __init__(self, parent=None):
-		super(PlayThread,self).__init__(parent)
+		super(Audio,self).__init__()
 		self.parent=parent
 
-	def run(self):
+	def audio(self):
+		QThread.setTerminationEnabled(True)
 		channels=self.parent.channels
 		framerate=self.parent.framerate
 		magic=self.parent.magic
 		sampwidth=self.parent.sampwidth
-
 		norm=magic**(-0.5)
+		
 		fs=numpy.fft.fftfreq(magic)
 		fs1=framerate*fs[0:magic/2]
 
@@ -67,8 +68,8 @@ class PlayThread(QThread):
                                 delta=time.time()-start
 				#data=self.parent.wave.readframes(magic)
 				size,data=rec.read()
-				print size
 				if len(data)==magic*sampwidth*channels:
+					print size,magic,sampwidth,channels
 					self.parent.deque.append(abs(numpy.fft.rfft([norm*struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)])))
 					self.emit(SIGNAL("update()"))
 			#	QThread.yieldCurrentThread()
@@ -91,12 +92,13 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.framerate=44100
 		self.setwindow()
 
+
 		self.windowCombo.connect(self.windowCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
 		self.zoomSlider.connect(self.zoomSlider, SIGNAL("valueChanged(int)"), self.zoom)
-		self.action_Open.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
+		self.action_Quit.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
 		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
 		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
-		self.action_Play.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
+		self.action_Stop.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
 
 	def zoom(self, maxval):
 		self.viewBox.setRange(xRange=[0,maxval])
@@ -132,13 +134,19 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.mainPlot.plot(self.fs1,ff[0:self.magic/2])
 		
 	def play(self):
-		self.playThread = PlayThread(self)
-		self.playThread.connect(self.playThread, SIGNAL("update()"),self.plot)
-		self.playThread.start()
+		self.audio=Audio(self)
+		self.audioThread=QThread()
+		self.audio.moveToThread(self.audioThread)
+		self.audioThread.connect(self.audio, SIGNAL("update()"), self.plot)
+		self.audioThread.connect(self.audioThread, SIGNAL("started()"), self.audio.audio)
+		self.audioThread.start()
 
 	def stopplay(self):
-		self.playThread.terminate()
+		print self.audioThread.isRunning()
+		if self.audioThread.isRunning():
+			self.audioThread.terminate()
 
+		print self.audioThread.isRunning()
 		
 
 if __name__ == "__main__":
