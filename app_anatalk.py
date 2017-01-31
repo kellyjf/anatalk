@@ -31,6 +31,8 @@ class PlayThread(QThread):
 		framerate=self.parent.framerate
 		magic=self.parent.magic
 		sampwidth=self.parent.sampwidth
+
+		norm=magic**(-0.5)
 		fs=numpy.fft.fftfreq(magic)
 		fs1=framerate*fs[0:magic/2]
 
@@ -63,9 +65,11 @@ class PlayThread(QThread):
 				self.parent.pcm.write(data)
                                 fcnt=fcnt+magic
                                 delta=time.time()-start
-				data=self.parent.wave.readframes(magic)
+				#data=self.parent.wave.readframes(magic)
+				size,data=rec.read()
+				print size
 				if len(data)==magic*sampwidth*channels:
-					self.parent.deque.append(abs(numpy.fft.rfft([struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)],norm="ortho")))
+					self.parent.deque.append(abs(numpy.fft.rfft([norm*struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)])))
 					self.emit(SIGNAL("update()"))
 			#	QThread.yieldCurrentThread()
                                 if fcnt>delta*framerate: 
@@ -78,7 +82,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		QMainWindow.__init__(self,parent)
 		self.setupUi(self)
 		self.viewBox=self.mainPlot.getViewBox()
-		self.viewBox.setRange(xRange=[0,3000],yRange=[0,5000])
+		self.viewBox.setRange(xRange=[0,3000],yRange=[0,500])
 		self.pcm=aa.PCM(aa.PCM_PLAYBACK)
 		self.deque=collections.deque()
 		self.opendlg=QFileDialog()
