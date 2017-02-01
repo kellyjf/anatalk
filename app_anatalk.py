@@ -32,11 +32,8 @@ class Audio(QObject):
 		framerate=self.parent.framerate
 		magic=self.parent.magic
 		sampwidth=self.parent.sampwidth
-		norm=magic**(-0.5)
+		norm=magic**(-1)
 		
-		fs=numpy.fft.fftfreq(magic)
-		fs1=framerate*fs[0:magic/2]
-
 		if sampwidth==1:
 		    format=aa.PCM_FORMAT_U8
 		    fmtcode="B"
@@ -80,10 +77,8 @@ class Audio(QObject):
 		magic=self.parent.magic
 		sampwidth=self.parent.sampwidth
 		norm=magic**(-0.5)
+		norm=magic**(-1)
 		
-		fs=numpy.fft.fftfreq(magic)
-		fs1=framerate*fs[0:magic/2]
-
 		if sampwidth==1:
 		    format=aa.PCM_FORMAT_U8
 		    fmtcode="B"
@@ -127,17 +122,25 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.opendlg=QFileDialog()
 		self.opendlg.setFilter("Sound files (*.wav)")
 
-                self.framerate=8000
-                self.sampwidth=1
-		self.magic=int(self.windowCombo.currentText())
+		self.channels=1
+		self.framerate=None
+		self.sampwidth=None
+		self.magic=None
 
 		self.windowCombo.connect(self.windowCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
+		self.sampwidthCombo.connect(self.sampwidthCombo, SIGNAL("currentIndexChanged(int)"), self.setsampwidth)
+		self.framerateCombo.connect(self.framerateCombo, SIGNAL("currentIndexChanged(int)"), self.setframerate)
 		self.zoomSlider.connect(self.zoomSlider, SIGNAL("valueChanged(int)"), self.zoom)
 		self.action_Quit.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
 		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
-		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.record)
+		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
+		self.action_Record.connect(self.action_Record, SIGNAL("triggered()"), self.record)
 		self.action_Stop.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
 
+		self.setsampwidth()
+		self.setframerate()
+		self.setwindow()
+		
 	def zoom(self, maxval):
 		self.viewBox.setRange(xRange=[0,maxval])
 
@@ -148,14 +151,24 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			filename=str(self.opendlg.selectedFiles()[0])
 			self.openfile(filename)
 
+
 	def setfreqs(self):
-		self.fs1=self.framerate*self.fs[0:self.magic/2]
+		if self.magic != None:
+			self.fs=numpy.fft.fftfreq(self.magic)
+			if self.framerate != None:
+                                print "Setting freq axis",self.framerate,self.fs[self.magic/2-1]
+				self.fs1=self.framerate*self.fs[0:self.magic/2]
 
 	def setwindow(self, val=None):
 		self.magic=int(self.windowCombo.currentText())
-		self.fs=numpy.fft.fftfreq(self.magic)
 		self.setfreqs()
-		self.viewBox.setRange(yRange=[0,256**self.sampwidth])
+	def setframerate(self, val=None):
+		self.framerate=int(self.framerateCombo.currentText())
+                self.zoomSlider.setMaximum(self.framerate/2)
+		self.setfreqs()
+	def setsampwidth(self, val=None):
+		self.sampwidth=int(self.sampwidthCombo.currentText())
+		self.viewBox.setRange(yRange=[0,512])
 
 	def openfile(self,filename):
 		self.filename=filename
@@ -165,8 +178,12 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.framerate=self.wave.getframerate()
 			self.sampwidth=self.wave.getsampwidth()
 			self.statusbar.showMessage("%s (%d,%d,%d)"%(self.filename,self.framerate,self.channels,self.sampwidth))
-			self.setwindow()
-			self.play()
+			self.framerateCombo.setCurrentIndex(self.framerateCombo.findText(str(self.framerate)))
+			print str(self.sampwidth)
+			print self.sampwidthCombo.findText(str(self.sampwidth))
+			self.sampwidthCombo.setCurrentIndex(self.sampwidthCombo.findText(str(self.sampwidth)))
+			print "%s (%d,%d,%d)"%(self.filename,self.framerate,self.channels,self.sampwidth)
+			self.setfreqs()
 
 	def plot(self):
 		ff=self.deque.popleft()
@@ -182,9 +199,6 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audioThread.start()
 
 	def record(self):
-                self.channels=1
-                self.framerate=16000
-                self.sampwidth=2
                 self.statusbar.showMessage("Recording (%d,%d,%d)"%(self.framerate,self.channels,self.sampwidth))
                 self.setwindow()
 		self.audio=Audio(self)
@@ -195,12 +209,8 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audioThread.start()
 
 	def stopplay(self):
-		print self.audioThread.isRunning()
 		if self.audioThread.isRunning():
 			self.audioThread.terminate()
-
-		print self.audioThread.isRunning()
-		
 
 if __name__ == "__main__":
 	signal.signal(signal.SIGINT, signal.SIG_DFL)
