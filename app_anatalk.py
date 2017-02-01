@@ -168,7 +168,6 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.setfreqs()
 	def setsampwidth(self, val=None):
 		self.sampwidth=int(self.sampwidthCombo.currentText())
-		self.viewBox.setRange(yRange=[0,512])
 
 	def openfile(self,filename):
 		self.filename=filename
@@ -191,6 +190,8 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.mainPlot.plot(self.fs1,ff[0:self.magic/2])
 		
 	def play(self):
+		self.viewBox.setRange(yRange=[0,2000])
+                self.windowCombo.setCurrentIndex(self.windowCombo.findText("4096"))
 		self.audio=Audio(self)
 		self.audioThread=QThread()
 		self.audio.moveToThread(self.audioThread)
@@ -199,6 +200,9 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audioThread.start()
 
 	def record(self):
+		self.viewBox.setRange(yRange=[0,500])
+                self.framerateCombo.setCurrentIndex(self.framerateCombo.findText("16000"))
+                self.sampwidthCombo.setCurrentIndex(self.sampwidthCombo.findText("2"))
                 self.statusbar.showMessage("Recording (%d,%d,%d)"%(self.framerate,self.channels,self.sampwidth))
                 self.setwindow()
 		self.audio=Audio(self)
