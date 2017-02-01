@@ -89,11 +89,12 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.opendlg=QFileDialog()
 		self.opendlg.setFilter("Sound files (*.wav)")
 
-		self.framerate=44100
+		self.channels=1
 		self.setwindow()
 
-
 		self.windowCombo.connect(self.windowCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
+		self.sampwidthCombo.connect(self.sampwidthCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
+		self.framerateCombo.connect(self.framerateCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
 		self.zoomSlider.connect(self.zoomSlider, SIGNAL("valueChanged(int)"), self.zoom)
 		self.action_Quit.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
 		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
@@ -111,11 +112,13 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.openfile(filename)
 
 	def setfreqs(self):
+		self.fs=numpy.fft.fftfreq(self.magic)
 		self.fs1=self.framerate*self.fs[0:self.magic/2]
 
 	def setwindow(self, val=None):
 		self.magic=int(self.windowCombo.currentText())
-		self.fs=numpy.fft.fftfreq(self.magic)
+		self.sampwidth=int(self.sampwidthCombo.currentText())
+		self.framerate=int(self.framerateCombo.currentText())
 		self.setfreqs()
 
 	def openfile(self,filename):
@@ -126,6 +129,8 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.framerate=self.wave.getframerate()
 			self.sampwidth=self.wave.getsampwidth()
 			self.statusbar.showMessage("%s (%d,%d,%d)"%(self.filename,self.framerate,self.channels,self.sampwidth))
+			self.framerateCombo.setCurrentIndex(self.framerateCombo.findText(str(self.framerate)))
+			self.sampwidthCombo.setCurrentIndex(self.sampwidthCombo.findText(str(self.sampwidth)))
 			self.setfreqs()
 
 	def plot(self):
@@ -142,12 +147,8 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audioThread.start()
 
 	def stopplay(self):
-		print self.audioThread.isRunning()
 		if self.audioThread.isRunning():
 			self.audioThread.terminate()
-
-		print self.audioThread.isRunning()
-		
 
 if __name__ == "__main__":
 	signal.signal(signal.SIGINT, signal.SIG_DFL)
