@@ -119,8 +119,9 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.viewBox.setRange(xRange=[0,3000],yRange=[0,35000])
 		self.pcm=aa.PCM(aa.PCM_PLAYBACK)
 		self.deque=collections.deque()
-		self.opendlg=QFileDialog()
+		self.opendlg=QFileDialog(self)
 		self.opendlg.setFilter("Sound files (*.wav)")
+		self.opendlg.resize(480, 300)
 
 		self.channels=1
 		self.framerate=None
