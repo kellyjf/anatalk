@@ -26,6 +26,53 @@ class Audio(QObject):
 		super(Audio,self).__init__()
 		self.parent=parent
 
+	def capture(self):
+		QThread.setTerminationEnabled(True)
+		channels=self.parent.channels
+		framerate=self.parent.framerate
+		magic=self.parent.magic
+		sampwidth=self.parent.sampwidth
+		norm=magic**(-0.5)
+		
+		fs=numpy.fft.fftfreq(magic)
+		fs1=framerate*fs[0:magic/2]
+
+		if sampwidth==1:
+		    format=aa.PCM_FORMAT_U8
+		    fmtcode="B"
+		else:
+		    format=aa.PCM_FORMAT_S16_LE
+		    fmtcode="h"
+
+
+                rec=aa.PCM(aa.PCM_CAPTURE)
+                rec.setchannels(channels)
+                rec.setrate(framerate)
+                rec.setformat(format)
+                rec.setperiodsize(channels*magic)
+
+                self.parent.pcm.setchannels(channels)
+                self.parent.pcm.setrate(framerate)
+
+                self.parent.pcm.setformat(format)
+                self.parent.pcm.setperiodsize(channels*magic)
+                
+                size,data=rec.read()
+                start=time.time()
+                fcnt=0
+                while True:
+                        fcnt=fcnt+magic
+                        delta=time.time()-start
+                        size,chunk=rec.read()
+                        if size>0:
+                            data=data+chunk
+                        if len(data)>=magic*sampwidth*channels:
+                                self.parent.deque.append(abs(numpy.fft.rfft([norm*struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)])))
+                                self.emit(SIGNAL("update()"))
+                                self.parent.pcm.write(data[0:magic*sampwidth*channels])
+                                data=data[magic*sampwidth*channels:]
+		
+
 	def audio(self):
 		QThread.setTerminationEnabled(True)
 		channels=self.parent.channels
@@ -45,12 +92,6 @@ class Audio(QObject):
 		    fmtcode="h"
 
 
-		rec=aa.PCM(aa.PCM_CAPTURE)
-		rec.setchannels(channels)
-		rec.setrate(framerate)
-		rec.setformat(format)
-		rec.setperiodsize(channels*magic)
-
 		if self.parent.filename:
 			self.parent.pcm.setchannels(channels)
 			self.parent.pcm.setrate(framerate)
@@ -58,23 +99,20 @@ class Audio(QObject):
 			self.parent.pcm.setformat(format)
 			self.parent.pcm.setperiodsize(channels*magic)
 			
-#			data=self.parent.wave.readframes(magic)
-			size,data=rec.read()
+			data=self.parent.wave.readframes(magic)
                         start=time.time()
                         fcnt=0
 			while data:
 				self.parent.pcm.write(data)
                                 fcnt=fcnt+magic
                                 delta=time.time()-start
-				#data=self.parent.wave.readframes(magic)
-				size,data=rec.read()
+				data=self.parent.wave.readframes(magic)
 				if len(data)==magic*sampwidth*channels:
-					print size,magic,sampwidth,channels
 					self.parent.deque.append(abs(numpy.fft.rfft([norm*struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*magic,sampwidth*channels)])))
 					self.emit(SIGNAL("update()"))
-			#	QThread.yieldCurrentThread()
-                                if fcnt>delta*framerate: 
-                                    time.sleep(magic/framerate)
+                                if (fcnt-magic)>delta*framerate: 
+                                    print delta, fcnt,delta*framerate,"Sleep ",magic,framerate,float(magic)/framerate
+                                    time.sleep(float(magic)/framerate)
 		
 		print "Done", self.parent.filename
 
@@ -83,21 +121,21 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		QMainWindow.__init__(self,parent)
 		self.setupUi(self)
 		self.viewBox=self.mainPlot.getViewBox()
-		self.viewBox.setRange(xRange=[0,3000],yRange=[0,500])
+		self.viewBox.setRange(xRange=[0,3000],yRange=[0,35000])
 		self.pcm=aa.PCM(aa.PCM_PLAYBACK)
 		self.deque=collections.deque()
 		self.opendlg=QFileDialog()
 		self.opendlg.setFilter("Sound files (*.wav)")
 
-		self.framerate=44100
-		self.setwindow()
-
+                self.framerate=8000
+                self.sampwidth=1
+		self.magic=int(self.windowCombo.currentText())
 
 		self.windowCombo.connect(self.windowCombo, SIGNAL("currentIndexChanged(int)"), self.setwindow)
 		self.zoomSlider.connect(self.zoomSlider, SIGNAL("valueChanged(int)"), self.zoom)
 		self.action_Quit.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
 		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
-		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
+		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.record)
 		self.action_Stop.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
 
 	def zoom(self, maxval):
@@ -117,6 +155,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.magic=int(self.windowCombo.currentText())
 		self.fs=numpy.fft.fftfreq(self.magic)
 		self.setfreqs()
+		self.viewBox.setRange(yRange=[0,256**self.sampwidth])
 
 	def openfile(self,filename):
 		self.filename=filename
@@ -126,7 +165,8 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.framerate=self.wave.getframerate()
 			self.sampwidth=self.wave.getsampwidth()
 			self.statusbar.showMessage("%s (%d,%d,%d)"%(self.filename,self.framerate,self.channels,self.sampwidth))
-			self.setfreqs()
+			self.setwindow()
+			self.play()
 
 	def plot(self):
 		ff=self.deque.popleft()
@@ -139,6 +179,19 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audio.moveToThread(self.audioThread)
 		self.audioThread.connect(self.audio, SIGNAL("update()"), self.plot)
 		self.audioThread.connect(self.audioThread, SIGNAL("started()"), self.audio.audio)
+		self.audioThread.start()
+
+	def record(self):
+                self.channels=1
+                self.framerate=16000
+                self.sampwidth=2
+                self.statusbar.showMessage("Recording (%d,%d,%d)"%(self.framerate,self.channels,self.sampwidth))
+                self.setwindow()
+		self.audio=Audio(self)
+		self.audioThread=QThread()
+		self.audio.moveToThread(self.audioThread)
+		self.audioThread.connect(self.audio, SIGNAL("update()"), self.plot)
+		self.audioThread.connect(self.audioThread, SIGNAL("started()"), self.audio.capture)
 		self.audioThread.start()
 
 	def stopplay(self):
