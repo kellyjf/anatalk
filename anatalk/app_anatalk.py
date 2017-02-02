@@ -137,11 +137,19 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
 		self.action_Record.connect(self.action_Record, SIGNAL("triggered()"), self.record)
 		self.action_Stop.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
+		self.action_Halt.connect(self.action_Halt, SIGNAL("triggered()"), self.halt)
+		self.action_Reboot.connect(self.action_Halt, SIGNAL("triggered()"), self.reboot)
 
 		self.setsampwidth()
 		self.setframerate()
 		self.setwindow()
 		
+	def halt(self):
+		os.system("halt")
+
+	def reboot(self):
+		os.system("halt")
+
 	def zoom(self, maxval):
 		self.viewBox.setRange(xRange=[0,maxval])
 

@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_anatalk.ui'
 #
-# Created: Tue Jan 31 20:01:25 2017
-#      by: PyQt4 UI code generator 4.10.1
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -87,10 +86,12 @@ class Ui_AnatalkWindow(object):
 		self.toolBar.setObjectName(_fromUtf8("toolBar"))
 		AnatalkWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
 		self.menuBar = QtGui.QMenuBar(AnatalkWindow)
-		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 27))
+		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 25))
 		self.menuBar.setObjectName(_fromUtf8("menuBar"))
 		self.menu_File = QtGui.QMenu(self.menuBar)
 		self.menu_File.setObjectName(_fromUtf8("menu_File"))
+		self.menuSystem = QtGui.QMenu(self.menuBar)
+		self.menuSystem.setObjectName(_fromUtf8("menuSystem"))
 		AnatalkWindow.setMenuBar(self.menuBar)
 		self.action_Open = QtGui.QAction(AnatalkWindow)
 		self.action_Open.setObjectName(_fromUtf8("action_Open"))
@@ -102,6 +103,10 @@ class Ui_AnatalkWindow(object):
 		self.action_Stop.setObjectName(_fromUtf8("action_Stop"))
 		self.action_Record = QtGui.QAction(AnatalkWindow)
 		self.action_Record.setObjectName(_fromUtf8("action_Record"))
+		self.action_Halt = QtGui.QAction(AnatalkWindow)
+		self.action_Halt.setObjectName(_fromUtf8("action_Halt"))
+		self.action_Reboot = QtGui.QAction(AnatalkWindow)
+		self.action_Reboot.setObjectName(_fromUtf8("action_Reboot"))
 		self.toolBar.addAction(self.action_Quit)
 		self.toolBar.addAction(self.action_Open)
 		self.toolBar.addAction(self.action_Play)
@@ -112,7 +117,10 @@ class Ui_AnatalkWindow(object):
 		self.menu_File.addAction(self.action_Record)
 		self.menu_File.addAction(self.action_Stop)
 		self.menu_File.addAction(self.action_Quit)
+		self.menuSystem.addAction(self.action_Halt)
+		self.menuSystem.addAction(self.action_Reboot)
 		self.menuBar.addAction(self.menu_File.menuAction())
+		self.menuBar.addAction(self.menuSystem.menuAction())
 
 		self.retranslateUi(AnatalkWindow)
 		QtCore.QObject.connect(self.action_Quit, QtCore.SIGNAL(_fromUtf8("activated()")), AnatalkWindow.close)
@@ -138,10 +146,13 @@ class Ui_AnatalkWindow(object):
 		self.windowCombo.setItemText(5, _translate("AnatalkWindow", "16384", None))
 		self.toolBar.setWindowTitle(_translate("AnatalkWindow", "toolBar", None))
 		self.menu_File.setTitle(_translate("AnatalkWindow", "&File", None))
+		self.menuSystem.setTitle(_translate("AnatalkWindow", "System", None))
 		self.action_Open.setText(_translate("AnatalkWindow", "&Open", None))
 		self.action_Quit.setText(_translate("AnatalkWindow", "&Quit", None))
 		self.action_Play.setText(_translate("AnatalkWindow", "&Play", None))
 		self.action_Stop.setText(_translate("AnatalkWindow", "&Stop", None))
 		self.action_Record.setText(_translate("AnatalkWindow", "&Record", None))
+		self.action_Halt.setText(_translate("AnatalkWindow", "&Halt", None))
+		self.action_Reboot.setText(_translate("AnatalkWindow", "&Reboot", None))
 
 from pyqtgraph import PlotWidget

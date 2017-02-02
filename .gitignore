@@ -1,4 +1,6 @@
 *.pyc
 .*.sw?
 *.wav
-
+dist
+build
+*.egg-info
