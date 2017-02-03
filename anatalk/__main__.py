@@ -1,5 +1,5 @@
 
-from anatalk import AnatalkWindow
+from anatalk import *
 import signal
 import sys
 from PyQt4.QtGui import QApplication
