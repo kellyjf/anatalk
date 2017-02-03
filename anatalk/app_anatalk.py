@@ -30,6 +30,7 @@ class Audio(QObject):
 		self.outwav=None
 
 	def sync(self):
+                self.running=False
 		if self.outwav:
 			self.outwav.close()
 			self.outwav=None
@@ -70,7 +71,8 @@ class Audio(QObject):
 		size,data=rec.read()
 		start=time.time()
 		fcnt=0
-		while True:
+                self.running=True
+		while self.running:
 			fcnt=fcnt+fftwin
 			delta=time.time()-start
 			size,chunk=rec.read()
@@ -210,11 +212,6 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		
 	def play(self):
 		if False:
-			self.vertZoomSlider.setMaximum(5000)
-			self.vertZoomSlider.setValue(2000)
-			self.horiZoomSlider.setMaximum(22050)
-			self.horiZoomSlider.setValue(22050)
-
 			self.fftCombo.setCurrentIndex(self.fftCombo.findText("4096"))
 			rate=int(self.fmtdlg.playRateCombo.currentText())
 			self.setfreqs(rate)
@@ -224,6 +221,16 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 			self.channels=1
 			self.framerate=16000
 			self.sampwidth=2
+
+                        self.vertZoomSlider.setMaximum(5000)
+                        self.vertZoomSlider.setValue(2000)
+                        self.horiZoomSlider.setMaximum(22050)
+                        self.horiZoomSlider.setValue(22050)
+
+		self.vertZoomSlider.setMaximum(2000)
+		self.vertZoomSlider.setValue(500)
+		self.horiZoomSlider.setMaximum(8000)
+		self.horiZoomSlider.setValue(8000)
 
 		self.openfile("/tmp/capture.wav")
 
@@ -256,10 +263,12 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audioThread.start()
 
 	def stopplay(self):
+                print "Stopping a %s thread"%("running" if self.audioThread.isRunning() else "stopped")
+
 		if self.audioThread.isRunning():
 			self.audio.sync()
-			self.audioThread.terminate()
-			os.system("sox -e signed-integer -r 16000 -c 1 -b 16 /tmp/capture.raw /tmp/capture.wav")
+			self.audioThread.quit()
+			os.system("sox -e signed-integer -r 16000 -c 1 -b 16 --norm /tmp/capture.raw /tmp/capture.wav")
 
 if __name__ == "__main__":
 	signal.signal(signal.SIGINT, signal.SIG_DFL)
