@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui_format.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Thu Feb  2 22:08:38 2017
+#      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,7 +26,7 @@ except AttributeError:
 class Ui_AudioFormat(object):
 	def setupUi(self, AudioFormat):
 		AudioFormat.setObjectName(_fromUtf8("AudioFormat"))
-		AudioFormat.resize(304, 199)
+		AudioFormat.resize(484, 340)
 		self.verticalLayout_2 = QtGui.QVBoxLayout(AudioFormat)
 		self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
 		self.tabWidget = QtGui.QTabWidget(AudioFormat)

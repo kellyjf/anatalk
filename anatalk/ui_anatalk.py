@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui_anatalk.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Thu Feb  2 22:08:38 2017
+#      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,7 +26,7 @@ except AttributeError:
 class Ui_AnatalkWindow(object):
 	def setupUi(self, AnatalkWindow):
 		AnatalkWindow.setObjectName(_fromUtf8("AnatalkWindow"))
-		AnatalkWindow.resize(480, 280)
+		AnatalkWindow.resize(735, 469)
 		self.centralwidget = QtGui.QWidget(AnatalkWindow)
 		self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
 		self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -67,7 +68,7 @@ class Ui_AnatalkWindow(object):
 		self.statusbar.setObjectName(_fromUtf8("statusbar"))
 		AnatalkWindow.setStatusBar(self.statusbar)
 		self.menuBar = QtGui.QMenuBar(AnatalkWindow)
-		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 25))
+		self.menuBar.setGeometry(QtCore.QRect(0, 0, 735, 47))
 		self.menuBar.setObjectName(_fromUtf8("menuBar"))
 		self.menu_File = QtGui.QMenu(self.menuBar)
 		self.menu_File.setObjectName(_fromUtf8("menu_File"))
