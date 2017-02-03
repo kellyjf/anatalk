@@ -20,6 +20,7 @@ import sys
 import signal
 import struct
 import time
+import os
 import collections
 
 class Audio(QObject):
@@ -150,7 +151,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		os.system("halt")
 
 	def reboot(self):
-		os.system("halt")
+		os.system("reboot")
 
 	def hzoom(self, maxval):
 		self.viewBox.setRange(xRange=[0,maxval])
@@ -224,7 +225,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 
 		self.fftwin=int(self.fftCombo.currentText())
 		rate=int(self.fmtdlg.recRateCombo.currentText())
-		self.setfreqs(rate,self.fftwin)
+		self.setfreqs(rate)
 
 		self.audio=Audio(self)
 		self.audioThread=QThread()
@@ -244,6 +245,6 @@ if __name__ == "__main__":
 	main = AnatalkWindow()
 	if len(sys.argv)>1:
 		main.openfile(sys.argv[1])
-	main.show()
+	main.showMaximized()
 	sys.exit(app.exec_())
 
