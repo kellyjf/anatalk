@@ -63,6 +63,7 @@ class Ui_AudioFormat(object):
 		self.verticalLayout_3 = QtGui.QVBoxLayout(self.playbackTab)
 		self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
 		self.playSetCheck = QtGui.QCheckBox(self.playbackTab)
+		self.playSetCheck.setChecked(True)
 		self.playSetCheck.setObjectName(_fromUtf8("playSetCheck"))
 		self.verticalLayout_3.addWidget(self.playSetCheck)
 		self.gridLayout = QtGui.QGridLayout()

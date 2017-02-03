@@ -105,6 +105,9 @@
          <property name="text">
           <string>Use File Settings</string>
          </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
