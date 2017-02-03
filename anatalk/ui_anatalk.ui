@@ -148,7 +148,7 @@
     <string>&amp;Play</string>
    </property>
    <property name="shortcut">
-    <string>Alt+P</string>
+    <string>F4</string>
    </property>
   </action>
   <action name="action_Stop">
@@ -156,7 +156,7 @@
     <string>&amp;Stop</string>
    </property>
    <property name="shortcut">
-    <string>Alt+S</string>
+    <string>F3</string>
    </property>
   </action>
   <action name="action_Record">
@@ -164,7 +164,7 @@
     <string>&amp;Record</string>
    </property>
    <property name="shortcut">
-    <string>Alt+R</string>
+    <string>F1</string>
    </property>
   </action>
   <action name="action_Halt">
