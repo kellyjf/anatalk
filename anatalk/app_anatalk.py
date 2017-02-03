@@ -36,7 +36,7 @@ class Audio(QObject):
 
 	def capture(self):
 		QThread.setTerminationEnabled(True)
-		self.outwav=open("/tmp/capture.dat","w")
+		self.outwav=open("/tmp/capture.raw","w")
 
 		format=str(self.parent.fmtdlg.recEncCombo.currentText())
 		rate=int(self.parent.fmtdlg.recRateCombo.currentText())
@@ -79,9 +79,10 @@ class Audio(QObject):
 			if len(data)>=fftwin*sampwidth*channels:
 				self.parent.deque.append(abs(numpy.fft.rfft([norm*struct.unpack(fmtcode,data[i:i+sampwidth])[0] for i in range(0,sampwidth*channels*fftwin,sampwidth*channels)])))
 				self.emit(SIGNAL("update()"))
-				self.parent.pcm.write(data[0:fftwin*sampwidth*channels])
 				if self.outwav:
 					self.outwav.write(data[0:fftwin*sampwidth*channels])
+                                else:
+                                        self.parent.pcm.write(data[0:fftwin*sampwidth*channels])
 				data=data[fftwin*sampwidth*channels:]
 		
 
@@ -258,7 +259,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		if self.audioThread.isRunning():
 			self.audio.sync()
 			self.audioThread.terminate()
-			os.system("sox -e signed-integer -r 16000 -c 1 -b 16 /tmp/capture.dat /tmp/capture.wav")
+			os.system("sox -e signed-integer -r 16000 -c 1 -b 16 /tmp/capture.raw /tmp/capture.wav")
 
 if __name__ == "__main__":
 	signal.signal(signal.SIGINT, signal.SIG_DFL)
