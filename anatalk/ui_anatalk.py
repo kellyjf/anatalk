@@ -2,7 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui_anatalk.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created: Sat Feb  4 10:01:04 2017
+#      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -67,7 +68,7 @@ class Ui_AnatalkWindow(object):
 		self.statusbar.setObjectName(_fromUtf8("statusbar"))
 		AnatalkWindow.setStatusBar(self.statusbar)
 		self.menuBar = QtGui.QMenuBar(AnatalkWindow)
-		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 25))
+		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 27))
 		self.menuBar.setObjectName(_fromUtf8("menuBar"))
 		self.menu_File = QtGui.QMenu(self.menuBar)
 		self.menu_File.setObjectName(_fromUtf8("menu_File"))
@@ -76,6 +77,9 @@ class Ui_AnatalkWindow(object):
 		self.menu_Audio = QtGui.QMenu(self.menuBar)
 		self.menu_Audio.setObjectName(_fromUtf8("menu_Audio"))
 		AnatalkWindow.setMenuBar(self.menuBar)
+		self.toolBar = QtGui.QToolBar(AnatalkWindow)
+		self.toolBar.setObjectName(_fromUtf8("toolBar"))
+		AnatalkWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
 		self.action_Open = QtGui.QAction(AnatalkWindow)
 		self.action_Open.setObjectName(_fromUtf8("action_Open"))
 		self.action_Quit = QtGui.QAction(AnatalkWindow)
@@ -109,6 +113,10 @@ class Ui_AnatalkWindow(object):
 		self.menuBar.addAction(self.menu_File.menuAction())
 		self.menuBar.addAction(self.menu_Audio.menuAction())
 		self.menuBar.addAction(self.menuSystem.menuAction())
+		self.toolBar.addAction(self.action_Record)
+		self.toolBar.addAction(self.action_Stop)
+		self.toolBar.addAction(self.action_Play)
+		self.toolBar.addAction(self.action_Halt)
 
 		self.retranslateUi(AnatalkWindow)
 		QtCore.QObject.connect(self.action_Quit, QtCore.SIGNAL(_fromUtf8("activated()")), AnatalkWindow.close)
@@ -126,6 +134,7 @@ class Ui_AnatalkWindow(object):
 		self.menu_File.setTitle(_translate("AnatalkWindow", "&File", None))
 		self.menuSystem.setTitle(_translate("AnatalkWindow", "System", None))
 		self.menu_Audio.setTitle(_translate("AnatalkWindow", "&Audio", None))
+		self.toolBar.setWindowTitle(_translate("AnatalkWindow", "toolBar", None))
 		self.action_Open.setText(_translate("AnatalkWindow", "&Open", None))
 		self.action_Quit.setText(_translate("AnatalkWindow", "&Quit", None))
 		self.action_Play.setText(_translate("AnatalkWindow", "&Play", None))
