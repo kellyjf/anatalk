@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_anatalk.ui'
 #
-# Created: Sat Feb  4 10:01:04 2017
-#      by: PyQt4 UI code generator 4.10.1
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -68,7 +67,7 @@ class Ui_AnatalkWindow(object):
 		self.statusbar.setObjectName(_fromUtf8("statusbar"))
 		AnatalkWindow.setStatusBar(self.statusbar)
 		self.menuBar = QtGui.QMenuBar(AnatalkWindow)
-		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 27))
+		self.menuBar.setGeometry(QtCore.QRect(0, 0, 480, 25))
 		self.menuBar.setObjectName(_fromUtf8("menuBar"))
 		self.menu_File = QtGui.QMenu(self.menuBar)
 		self.menu_File.setObjectName(_fromUtf8("menu_File"))
@@ -85,10 +84,20 @@ class Ui_AnatalkWindow(object):
 		self.action_Quit = QtGui.QAction(AnatalkWindow)
 		self.action_Quit.setObjectName(_fromUtf8("action_Quit"))
 		self.action_Play = QtGui.QAction(AnatalkWindow)
+		self.action_Play.setCheckable(True)
+		icon = QtGui.QIcon()
+		icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icons/play-off.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icons/play-on.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+		self.action_Play.setIcon(icon)
 		self.action_Play.setObjectName(_fromUtf8("action_Play"))
 		self.action_Stop = QtGui.QAction(AnatalkWindow)
 		self.action_Stop.setObjectName(_fromUtf8("action_Stop"))
 		self.action_Record = QtGui.QAction(AnatalkWindow)
+		self.action_Record.setCheckable(True)
+		icon1 = QtGui.QIcon()
+		icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icons/rec-off.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+		icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/icons/rec-on.png")), QtGui.QIcon.Normal, QtGui.QIcon.On)
+		self.action_Record.setIcon(icon1)
 		self.action_Record.setObjectName(_fromUtf8("action_Record"))
 		self.action_Halt = QtGui.QAction(AnatalkWindow)
 		self.action_Halt.setObjectName(_fromUtf8("action_Halt"))
@@ -114,8 +123,8 @@ class Ui_AnatalkWindow(object):
 		self.menuBar.addAction(self.menu_Audio.menuAction())
 		self.menuBar.addAction(self.menuSystem.menuAction())
 		self.toolBar.addAction(self.action_Record)
-		self.toolBar.addAction(self.action_Stop)
 		self.toolBar.addAction(self.action_Play)
+		self.toolBar.addAction(self.action_Stop)
 		self.toolBar.addAction(self.action_Halt)
 
 		self.retranslateUi(AnatalkWindow)
@@ -150,3 +159,4 @@ class Ui_AnatalkWindow(object):
 		self.action_Format.setShortcut(_translate("AnatalkWindow", "Alt+F", None))
 
 from pyqtgraph import PlotWidget
+import icons_rc

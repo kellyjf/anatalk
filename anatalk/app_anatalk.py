@@ -115,7 +115,8 @@ class Audio(QObject):
 			data=self.parent.wave.readframes(fftwin)
                         start=time.time()
                         fcnt=0
-			while data:
+			self.running=True
+			while self.running and data:
 				self.parent.pcm.write(data)
                                 fcnt=fcnt+fftwin
                                 delta=time.time()-start
@@ -137,6 +138,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.viewBox.setRange(xRange=[0,3000],yRange=[0,35000])
 		self.pcm=aa.PCM(aa.PCM_PLAYBACK)
 		self.deque=collections.deque()
+		self.audioThread = None
 		self.filename="/tmp/capture.wav"
 
 		self.opendlg=QFileDialog(self)
@@ -154,8 +156,8 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 
 		self.action_Quit.connect(self.action_Quit, SIGNAL("triggered()"), self.close)
 		self.action_Open.connect(self.action_Open, SIGNAL("triggered()"), self.pickfile)
-		self.action_Play.connect(self.action_Play, SIGNAL("triggered()"), self.play)
-		self.action_Record.connect(self.action_Record, SIGNAL("triggered()"), self.record)
+		self.action_Play.connect(self.action_Play, SIGNAL("toggled(bool)"), self.play)
+		self.action_Record.connect(self.action_Record, SIGNAL("toggled(bool)"), self.record)
 		self.action_Stop.connect(self.action_Stop, SIGNAL("triggered()"), self.stopplay)
 		self.action_Halt.connect(self.action_Halt, SIGNAL("triggered()"), self.halt)
 		self.action_Reboot.connect(self.action_Halt, SIGNAL("triggered()"), self.reboot)
@@ -210,22 +212,18 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.mainPlot.clear()
 		self.mainPlot.plot(self.fs1,ff[0:self.fftwin/2])
 		
+	def stopthread(self):
+		if self.audioThread and self.audioThread.isRunning():
+			self.audio.sync()
+			self.audioThread.quit()
+			self.audioThread.wait()
+			self.audioThread = None
+			return True
+		return False
+
 	def play(self):
-		if False:
-			self.fftCombo.setCurrentIndex(self.fftCombo.findText("4096"))
-			rate=int(self.fmtdlg.playRateCombo.currentText())
-			self.setfreqs(rate)
-
-			self.fmtdlg.playEncCombo.setCurrentIndex(self.fmtdlg.playEncCombo.findText("S16_LE"))
-			self.fmtdlg.playRateCombo.setCurrentIndex(self.fmtdlg.playRateCombo.findText("16000"))
-			self.channels=1
-			self.framerate=16000
-			self.sampwidth=2
-
-                        self.vertZoomSlider.setMaximum(5000)
-                        self.vertZoomSlider.setValue(2000)
-                        self.horiZoomSlider.setMaximum(22050)
-                        self.horiZoomSlider.setValue(22050)
+		if self.stopthread():
+			return
 
 		self.vertZoomSlider.setMaximum(2000)
 		self.vertZoomSlider.setValue(500)
@@ -239,9 +237,14 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audio.moveToThread(self.audioThread)
 		self.audioThread.connect(self.audio, SIGNAL("update()"), self.plot)
 		self.audioThread.connect(self.audioThread, SIGNAL("started()"), self.audio.playback)
+		self.audioThread.connect(self.audioThread, SIGNAL("finished()"), self.audioThread.deleteLater)
 		self.audioThread.start()
 
 	def record(self):
+		if self.stopthread():
+			os.system("sox -e signed-integer -r 16000 -c 1 -b 16 --norm /tmp/capture.raw /tmp/capture.wav")
+			return
+
 		self.vertZoomSlider.setMaximum(2000)
 		self.vertZoomSlider.setValue(500)
 		self.horiZoomSlider.setMaximum(8000)
@@ -260,6 +263,7 @@ class AnatalkWindow(Ui_AnatalkWindow,QMainWindow):
 		self.audio.moveToThread(self.audioThread)
 		self.audioThread.connect(self.audio, SIGNAL("update()"), self.plot)
 		self.audioThread.connect(self.audioThread, SIGNAL("started()"), self.audio.capture)
+		self.audioThread.connect(self.audioThread, SIGNAL("finished()"), self.audioThread.deleteLater)
 		self.audioThread.start()
 
 	def stopplay(self):

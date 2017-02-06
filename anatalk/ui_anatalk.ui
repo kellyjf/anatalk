@@ -99,7 +99,7 @@
      <x>0</x>
      <y>0</y>
      <width>480</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -144,8 +144,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_Record"/>
-   <addaction name="action_Stop"/>
    <addaction name="action_Play"/>
+   <addaction name="action_Stop"/>
    <addaction name="action_Halt"/>
   </widget>
   <action name="action_Open">
@@ -159,6 +159,14 @@
    </property>
   </action>
   <action name="action_Play">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/play-off.png</normaloff>
+     <normalon>:/icons/icons/play-on.png</normalon>:/icons/icons/play-off.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Play</string>
    </property>
@@ -175,6 +183,14 @@
    </property>
   </action>
   <action name="action_Record">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/icons/rec-off.png</normaloff>
+     <normalon>:/icons/icons/rec-on.png</normalon>:/icons/icons/rec-off.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Record</string>
    </property>
@@ -213,7 +229,9 @@
    <header location="global">pyqtgraph</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>action_Quit</sender>
